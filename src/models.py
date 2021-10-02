@@ -1,6 +1,6 @@
 from datetime import datetime
 from uuid import uuid4
-from pydantic import BaseModel, constr
+from pydantic import BaseModel, constr, Field
 
 
 class NewIdea(BaseModel):
@@ -9,7 +9,7 @@ class NewIdea(BaseModel):
 
 
 class Idea(BaseModel):
-    id: str = str(uuid4())
+    id: str = Field(default_factory=lambda: str(uuid4()))
     name: constr(max_length=100)
     tldr: constr(max_length=400)
 
