@@ -1,9 +1,22 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Form
+from fastapi.middleware.cors import CORSMiddleware
 
-from models import NewIdea, Idea
+from models import Idea
 from db import DB
 
 app = FastAPI()
+
+origins = [
+    "*"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.on_event("startup")
@@ -17,9 +30,9 @@ def shutdown():
 
 
 @app.put("/idea", status_code=201)
-def create_idea(idea: NewIdea):
+def create_idea(name: str = Form(default=None, max_length=50), tldr: str = Form(default=None, max_length=400)):
     db = DB.get_instance()
-    full_idea = Idea(**idea.dict())
+    full_idea = Idea(**{"name": name, "tldr": tldr})
     db.create_idea(full_idea.dict())
     return {"created": full_idea.id}
 
