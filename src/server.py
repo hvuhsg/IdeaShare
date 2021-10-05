@@ -40,6 +40,8 @@ def create_idea(name: str = Form(default=None, max_length=50), tldr: str = Form(
 @app.get("/search")
 def search_ideas(q: str):
     db = DB.get_instance()
+    if not q:
+        return db.main_page_ideas()
     results = db.search_ideas(q)
     db.save_search(q)
     return results

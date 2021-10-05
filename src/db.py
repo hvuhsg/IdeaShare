@@ -28,6 +28,9 @@ class DB:
     def create_idea(self, idea_dict: dict):
         self.__ideas.insert_one(idea_dict)
 
+    def main_page_ideas(self):
+        return list(self.__ideas.find({}, {"_id": 0, "score": 0}).limit(20).sort([("score", -1)]))
+
     def search_ideas(self, query: str):
         def remove_score(doc: dict):
             del doc["score"]
